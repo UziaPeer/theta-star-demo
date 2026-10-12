@@ -33,6 +33,8 @@ def parse_grid(text):
         if not 1 <= len(values) <= 50 or any(v not in ("0", "1") for v in values):
             raise ValueError("בכל שורה יש להזין עד 50 ערכי 0 או 1, מופרדים ברווחים.")
         cells.append([int(v) for v in values])
+    if any(len(row) != len(cells[0]) for row in cells):
+        raise ValueError("כל השורות בגריד חייבות להכיל אותו מספר תאים.")
     return CornerGrid(cells)
 
 
