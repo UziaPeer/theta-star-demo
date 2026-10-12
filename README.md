@@ -14,6 +14,8 @@ Open http://127.0.0.1:5000. For another author, set `PROJECT_AUTHOR`.
 ## Department server
 
 1. Obtain the department account and follow https://csariel.xyz/how-to/service .
+   The instructions page could not be fetched during preparation; confirm the
+   current server-specific steps and assigned port with the department.
 2. In `requirements.txt`, replace `-e ../networkz` with the actual fork URL and
    branch/commit: `networkz @ git+https://github.com/UziaPeer/networkz@theta-star`.
    This URL is a proposed destination, not a claim that a fork was published.
