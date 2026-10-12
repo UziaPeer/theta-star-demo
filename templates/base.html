@@ -1,0 +1,12 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Theta* — הדגמת מציאת מסלול</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<header><a href="/">Theta* / מציאת מסלול</a><nav><a href="/">הדגמה</a><a href="/about">אודות</a><a href="{{ paper }}">המאמר</a></nav></header>
+<main>{% block content %}{% endblock %}</main>
+<footer>פרויקט בקורס תכנות אלגוריתמים מחקריים · תאים חסומים, מסלולים בזווית חופשית</footer>
+</body></html>

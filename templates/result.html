@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>תוצאת {{ 'Basic Theta*' if values.variant=='basic' else 'AP Theta*' }}</h1>
+{% if error %}<p class="error">{{ error }}</p>{% endif %}
+<div class="metrics"><span>אורך המסלול <strong>{{ '%.4f'|format(length) }}</strong></span><span>זמן הרצה <strong>{{ '%.4f'|format(runtime) }} שניות</strong></span><span>צמתים שהורחבו <strong>{{ stats.expansions }}</strong></span></div>
+<section>
+<h2>הגריד והמסלול</h2>
+<svg viewBox="-0.6 -0.6 {{ grid.width+1.2 }} {{ grid.height+1.2 }}" role="img" aria-label="גריד עם מכשולים באפור, התחלה בירוק, יעד בכחול ומסלול בכתום">
+<g transform="translate(0,{{ grid.height }}) scale(1,-1)">
+{% for row in grid.cells %}{% set y=loop.index0 %}{% for cell in row %}<rect x="{{ loop.index0 }}" y="{{ y }}" width="1" height="1" fill="{{ '#53616c' if cell else '#fff' }}" stroke="#d8e0e5" stroke-width="0.02"/>{% endfor %}{% endfor %}
+{% for a,b,valid,length in segments %}<line x1="{{ a[0] }}" y1="{{ a[1] }}" x2="{{ b[0] }}" y2="{{ b[1] }}" stroke="#dc6c21" stroke-width="0.065"/>{% endfor %}
+<circle cx="{{ start[0] }}" cy="{{ start[1] }}" r="0.12" fill="#137754"/><circle cx="{{ goal[0] }}" cy="{{ goal[1] }}" r="0.12" fill="#305fe5"/>
+</g></svg>
+<p>ירוק = התחלה · כחול = יעד · אפור = חסום · כתום = המסלול. מותר לעבור בנקודה שבה שני תאים חסומים נוגעים באלכסון.</p>
+<p dir="ltr" class="code">{{ path }}</p>
+</section>
+<section><h2>בדיקת חוקיות התוצאה</h2>
+{% if path %}<p>המסלול מתחיל ב־{{ start }} ומסתיים ב־{{ goal }}. לכל מקטע נבדק קו ראייה, ולכן הוא אינו עובר בתוך תא חסום. אין הבטחה לאופטימליות.</p>
+<table><thead><tr><th>מקטע</th><th>אורך</th><th>קו ראייה</th></tr></thead><tbody>{% for a,b,valid,length in segments %}<tr><td dir="ltr">{{ a }} → {{ b }}</td><td>{{ '%.4f'|format(length) }}</td><td>{{ 'תקין' if valid else 'לא תקין' }}</td></tr>{% endfor %}</tbody></table>{% else %}<p>לא נמצא מסלול, ולכן אין מקטעים לבדיקה.</p>{% endif %}
+</section>
+<section><h2>הקלט שנבדק</h2><pre dir="ltr">{{ values.cells }}</pre><p>התחלה: {{ start }}; יעד: {{ goal }}</p></section>
+<p><a href="#logs">לוגים מפורטים של ההרצה</a> · <a href="/">הרצה נוספת</a></p>
+<details id="logs"><summary>שלבי ההרצה</summary><p>Expand = הרחבת צומת; path1 = דרך הצומת; path2 = דרך ההורה; Bounds = תחום זוויות.</p><pre dir="ltr">{{ logs }}</pre></details>
+{% endblock %}

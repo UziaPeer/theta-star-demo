@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>מסלול קצר, בכל זווית</h1>
+<p>Theta* מרחיב את A*: אם אפשר לראות את ההורה של הצומת הנוכחי, אפשר לקצר את המסלול דרכו. המסלול חוקי, אך לא מובטח שהוא הקצר ביותר.</p>
+{% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+<form method="post">
+<section>
+<h2>יצירת דוגמה אקראית</h2>
+<div class="fields">
+{% for name,label,min,max in [('width','רוחב',1,50),('height','גובה',1,50),('density','אחוז חסימה',0,60),('seed','זרע אקראי',0,1000000)] %}
+<label>{{ label }}<input type="number" name="{{ name }}" value="{{ values[name] }}" min="{{ min }}" max="{{ max }}" required></label>
+{% endfor %}
+</div>
+<button name="action" value="random" class="secondary">מלאו את הטופס בקלט אקראי</button>
+<p class="hint">אותו זרע יוצר אותו גריד. ייתכן שבגריד אקראי לא יהיה מסלול.</p>
+</section>
+<section>
+<h2>הקלט לאלגוריתם</h2>
+<label for="cells">מטריצת תאים</label>
+<p id="format">0 = פנוי, 1 = חסום; רווח בין ערכים ושורה חדשה בין שורות. השורה הראשונה היא התחתונה (y=0). הקואורדינטות הן פינות התאים: בגריד 5×5, הטווח הוא 0–5 בכל ציר.</p>
+<textarea id="cells" name="cells" rows="9" dir="ltr" aria-describedby="format" required>{{ values.cells }}</textarea>
+<div class="fields">
+{% for name,label in [('sx','התחלה x'),('sy','התחלה y'),('gx','יעד x'),('gy','יעד y')] %}
+<label>{{ label }}<input type="number" name="{{ name }}" value="{{ values[name] }}" required></label>
+{% endfor %}
+<label>אלגוריתם<select name="variant"><option value="basic" {% if values.variant=='basic' %}selected{% endif %}>Basic Theta*</option><option value="ap" {% if values.variant=='ap' %}selected{% endif %}>AP Theta*</option></select></label>
+</div>
+<button name="action" value="run">מצאו מסלול</button>
+</section>
+</form>
+{% endblock %}
