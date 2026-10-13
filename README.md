@@ -3,12 +3,17 @@
 זהו מאגר Git נפרד. האתר מקבל גריד, יוצר גם קלט אקראי, מציג מסלול,
 בדיקת קו ראייה, לוגים וקישור למאמר. אין בו מימוש AP.
 
-מקומית, מריצים `./start.ps1` מתוך תיקיית `project`. האתר נפתח ב־
-http://127.0.0.1:5000. לבדיקות:
+אחרי שכפול המאגר ל־Windows, מתוך תיקיית האתר:
 
 ```powershell
-../../.venv/Scripts/python.exe -m pytest tests -v
+py -3.12 -m venv .venv
+./.venv/Scripts/python.exe -m pip install -r requirements.txt
+./.venv/Scripts/python.exe app.py
 ```
+
+האתר נפתח ב־http://127.0.0.1:5000. לבדיקות מתקינים גם `pytest`
+ומריצים `./.venv/Scripts/python.exe -m pytest tests -v`.
+בתיקיית הפרויקט המשותפת אפשר פשוט להריץ `./start.ps1` מתוך `project`.
 
 `requirements.txt` מתקין את Basic Theta* מענף Git ייעודי
 `codex/theta-star-deployment` ב־fork. הענף הזה זהה לענף המימוש,
@@ -19,7 +24,7 @@ http://127.0.0.1:5000. לבדיקות:
 
 פריסה עתידית, לאחר אישור המרצה:
 
-1. לפרסם את ענף הפריסה ואת מאגר האתר ולתעד commit מדויק של המימוש.
+1. ענף הפריסה ומאגר האתר כבר פורסמו; לפני פריסה בודקים שהם מעודכנים.
 2. לקבל חשבון ופורט לפי הוראות שרת המחלקה העדכניות.
 3. בשרת ליצור venv ולהריץ `pip install -r requirements.txt`.
 4. לוודא ש־`python -c "from graphs.theta_star import theta_star"` מצליח.
