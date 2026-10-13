@@ -1,28 +1,30 @@
-# Theta* demo
+# אתר הדגמה ל־Basic Theta*
 
-A small Flask form, result page (SVG grid, path, validity checks and logs), and
-about page. Algorithm code belongs to the separate NetworkZ repository.
+זהו מאגר Git נפרד. האתר מקבל גריד, יוצר גם קלט אקראי, מציג מסלול,
+בדיקת קו ראייה, לוגים וקישור למאמר. אין בו מימוש AP.
 
-From this folder, after installing the algorithm checkout:
+מקומית, מריצים `./start.ps1` מתוך תיקיית `project`. האתר נפתח ב־
+http://127.0.0.1:5000. לבדיקות:
 
 ```powershell
-../.venv/Scripts/python.exe app.py
+../../.venv/Scripts/python.exe -m pytest tests -v
 ```
 
-Open http://127.0.0.1:5000. For another author, set `PROJECT_AUTHOR`.
+`requirements.txt` מתקין את Basic Theta* מענף Git ייעודי
+`codex/theta-star-deployment` ב־fork. הענף הזה זהה לענף המימוש,
+בתוספת הגדרות התקנה קטנות ב־`pyproject.toml`: המאגר המקורי אינו
+ניתן להתקנת pip ישירות בגלל מבנה התיקיות שלו. כך ענף ה־PR נשאר
+עם קובצי האלגוריתם והבדיקות בלבד. ההתקנה נבדקה מקומית.
+לפיתוח מקומי בלי התקנה אפשר להגדיר `THETA_STAR_REPO` לנתיב המקור.
 
-## Department server
+פריסה עתידית, לאחר אישור המרצה:
 
-1. Obtain the department account and follow https://csariel.xyz/how-to/service .
-   The instructions page could not be fetched during preparation; confirm the
-   current server-specific steps and assigned port with the department.
-2. In `requirements.txt`, replace `-e ../networkz` with the actual fork URL and
-   branch/commit: `networkz @ git+https://github.com/UziaPeer/networkz@theta-star`.
-   This URL is a proposed destination, not a claim that a fork was published.
-3. Use Python 3.12, install requirements in a virtual environment.
-4. From this folder run `gunicorn --workers 1 --bind 127.0.0.1:PORT wsgi:app`;
-   replace PORT with the assigned port and configure the department's service.
-5. Verify the public site, random input, errors, result, and logs after deployment.
+1. לפרסם את ענף הפריסה ואת מאגר האתר ולתעד commit מדויק של המימוש.
+2. לקבל חשבון ופורט לפי הוראות שרת המחלקה העדכניות.
+3. בשרת ליצור venv ולהריץ `pip install -r requirements.txt`.
+4. לוודא ש־`python -c "from graphs.theta_star import theta_star"` מצליח.
+5. להריץ `gunicorn --workers 1 --bind 127.0.0.1:PORT wsgi:app` ולחבר לשירות המחלקה.
+6. לבדוק באתר הציבורי קלט רגיל, אקראי, שגוי ולוגים, ואז לצלם מסכים.
 
-The site requires no database or secret key. Input is limited to 50x50 cells.
-Debug is off. Logs are request-local and not kept on the server.
+אין באתר database או מפתח סודי; קלט מוגבל ל־50×50 ו־debug כבוי.
+הוראות השרת המדויקות והפורט עדיין מחייבים אישור מול המחלקה.

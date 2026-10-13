@@ -30,7 +30,6 @@ def payload(**changes):
         sy=0,
         gx=2,
         gy=2,
-        variant="basic",
         **changes,
     )
 
@@ -40,10 +39,8 @@ def test_pages(client):
     assert client.get("/about").status_code == 200
 
 
-@pytest.mark.parametrize("variant", ["basic", "ap"])
-def test_result_and_logs(client, variant):
+def test_result_and_logs(client):
     data = payload()
-    data["variant"] = variant
     result = client.post("/", data=data)
     assert result.status_code == 200
     text = result.get_data(as_text=True)
@@ -59,7 +56,6 @@ def test_result_and_logs(client, variant):
         ("cells", ""),
         ("gx", 99),
         ("sx", "a"),
-        ("variant", "wrong"),
     ],
 )
 def test_invalid_input(client, field, value):

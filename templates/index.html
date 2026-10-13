@@ -23,7 +23,7 @@
 {% for name,label in [('sx','התחלה x'),('sy','התחלה y'),('gx','יעד x'),('gy','יעד y')] %}
 <label>{{ label }}<input type="number" name="{{ name }}" value="{{ values[name] }}" required></label>
 {% endfor %}
-<label>אלגוריתם<select name="variant"><option value="basic" {% if values.variant=='basic' %}selected{% endif %}>Basic Theta*</option><option value="ap" {% if values.variant=='ap' %}selected{% endif %}>AP Theta*</option></select></label>
+<p>אלגוריתם: Basic Theta*</p>
 </div>
 <button name="action" value="run">מצאו מסלול</button>
 </section>

@@ -1,8 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1>תוצאת {{ 'Basic Theta*' if values.variant=='basic' else 'AP Theta*' }}</h1>
+<h1>תוצאת Basic Theta*</h1>
 {% if error %}<p class="error">{{ error }}</p>{% endif %}
-<div class="metrics"><span>אורך המסלול <strong>{{ '%.4f'|format(length) }}</strong></span><span>זמן הרצה <strong>{{ '%.4f'|format(runtime) }} שניות</strong></span><span>צמתים שהורחבו <strong>{{ stats.expansions }}</strong></span></div>
+<div class="metrics"><span>אורך המסלול <strong>{{ '%.4f'|format(length) }}</strong></span><span>זמן הרצה <strong>{{ '%.4f'|format(runtime) }} שניות</strong></span></div>
 <section>
 <h2>הגריד והמסלול</h2>
 <svg viewBox="-0.6 -0.6 {{ grid.width+1.2 }} {{ grid.height+1.2 }}" role="img" aria-label="גריד עם מכשולים באפור, התחלה בירוק, יעד בכחול ומסלול בכתום">
@@ -20,5 +20,5 @@
 </section>
 <section><h2>הקלט שנבדק</h2><pre dir="ltr">{{ values.cells }}</pre><p>התחלה: {{ start }}; יעד: {{ goal }}</p></section>
 <p><a href="#logs">לוגים מפורטים של ההרצה</a> · <a href="/">הרצה נוספת</a></p>
-<details id="logs"><summary>שלבי ההרצה</summary><p>Expand = הרחבת צומת; path1 = דרך הצומת; path2 = דרך ההורה; Bounds = תחום זוויות.</p><pre dir="ltr">{{ logs }}</pre></details>
+<details id="logs"><summary>שלבי ההרצה</summary><p>Expand = הרחבת צומת; path1 = דרך הצומת; path2 = דרך ההורה.</p><pre dir="ltr">{{ logs }}</pre></details>
 {% endblock %}

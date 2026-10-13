@@ -5,16 +5,27 @@ Programmer: Uzia Peer. Date: 2026-10-12.
 """
 
 import io
+import importlib.util
 import logging
 import os
+import sys
+from pathlib import Path
 from random import Random
 from threading import Lock
 from time import perf_counter
 
-import networkx as nx
 from flask import Flask, render_template, request
 
-from networkz import CornerGrid, path_length, theta_star
+# Prefer the package installed from the deployment branch. A source path is
+# useful during development before that package is installed.
+source = os.environ.get("THETA_STAR_REPO")
+if source:
+    sys.path.insert(0, source)
+elif not importlib.util.find_spec("graphs"):
+    local_source = Path(__file__).parents[2] / "assignment_7" / "thealgorithms-python"
+    if (local_source / "graphs" / "theta_star.py").is_file():
+        sys.path.insert(0, str(local_source))
+from graphs.theta_star import CornerGrid, path_length, theta_star
 
 app = Flask(__name__)
 app.config["MAX_CONTENT_LENGTH"] = 50_000
@@ -55,7 +66,6 @@ def index():
         sy=0,
         gx=5,
         gy=5,
-        variant="basic",
         width=5,
         height=5,
         density=20,
@@ -85,16 +95,14 @@ def index():
             else:
                 grid = parse_grid(values["cells"])
                 start, goal = point(values, "s"), point(values, "g")
-                if not grid.valid_vertex(start) or not grid.valid_vertex(goal):
+                if not grid.valid_corner(start) or not grid.valid_corner(goal):
                     raise ValueError(
                         "נקודות ההתחלה והיעד חייבות להיות פינות בתוך הגריד, הנוגעות בתא פנוי."
                     )
-                if values["variant"] not in ("basic", "ap"):
-                    raise ValueError("בחרו Basic Theta* או AP Theta*.")
-                output, stats, error = io.StringIO(), {}, None
+                output = io.StringIO()
                 handler = logging.StreamHandler(output)
                 handler.setFormatter(logging.Formatter("%(levelname)s: %(message)s"))
-                algorithm_logger = logging.getLogger("networkz.algorithms.theta_star")
+                algorithm_logger = logging.getLogger("graphs.theta_star")
                 # Logger configuration is shared: serialize capture, then restore it.
                 with log_lock:
                     previous = algorithm_logger.level
@@ -102,15 +110,7 @@ def index():
                     algorithm_logger.addHandler(handler)
                     t0 = perf_counter()
                     try:
-                        path = theta_star(
-                            grid,
-                            start,
-                            goal,
-                            variant=values["variant"],
-                            statistics=stats,
-                        )
-                    except nx.NetworkXNoPath:
-                        path, error = [], "אין מסלול בין נקודת ההתחלה ליעד בגריד הזה."
+                        path = theta_star([list(row) for row in grid.cells], start, goal)
                     finally:
                         runtime = perf_counter() - t0
                         algorithm_logger.removeHandler(handler)
@@ -119,6 +119,7 @@ def index():
                     (a, b, grid.line_of_sight(a, b), path_length([a, b]))
                     for a, b in zip(path, path[1:])
                 ]
+                error = None if path else "אין מסלול בין נקודת ההתחלה ליעד בגריד הזה."
                 return render_template(
                     "result.html",
                     grid=grid,
@@ -129,7 +130,6 @@ def index():
                     runtime=runtime,
                     logs=output.getvalue(),
                     segments=segments,
-                    stats=stats,
                     error=error,
                     values=values,
                     paper=PAPER,
