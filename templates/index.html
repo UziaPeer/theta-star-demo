@@ -5,14 +5,14 @@
 {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
 <form method="post">
 <section>
-<h2>יצירת דוגמה אקראית</h2>
+<h2>יצירת מפה</h2>
 <div class="fields">
-{% for name,label,min,max in [('width','רוחב',1,50),('height','גובה',1,50),('density','אחוז חסימה',0,60),('seed','זרע אקראי',0,1000000)] %}
+{% for name,label,min,max in [('width','רוחב',1,50),('height','גובה',1,50),('density','אחוז חסימה',0,60),('seed','seed',0,1000000)] %}
 <label>{{ label }}<input type="number" name="{{ name }}" value="{{ values[name] }}" min="{{ min }}" max="{{ max }}" required></label>
 {% endfor %}
 </div>
-<button name="action" value="random" class="secondary">מלאו את הטופס בקלט אקראי</button>
-<p class="hint">אותו זרע יוצר אותו גריד. ייתכן שבגריד אקראי לא יהיה מסלול.</p>
+<button name="action" value="map" class="secondary" formnovalidate>צור מפה</button>
+<p class="hint">אותם רוחב, גובה, אחוז חסימה ו־seed יוצרים אותה מפה. ייתכן שבמפה לא יהיה מסלול.</p>
 </section>
 <section>
 <h2>הקלט לאלגוריתם</h2>
@@ -23,9 +23,11 @@
 {% for name,label in [('sx','התחלה x'),('sy','התחלה y'),('gx','יעד x'),('gy','יעד y')] %}
 <label>{{ label }}<input type="number" name="{{ name }}" value="{{ values[name] }}" required></label>
 {% endfor %}
-<p>אלגוריתם: Basic Theta*</p>
 </div>
-<button name="action" value="run">מצאו מסלול</button>
+<button name="action" value="points" class="secondary" formnovalidate>הגרל נקודות התחלה ויעד</button>
+<p class="hint">הנקודות ייבחרו בגבולות המפה ורק מפינות שנוגעות בתא פנוי.</p>
+<p>אלגוריתם: Basic Theta*</p>
+<button name="action" value="run" formnovalidate>הרץ אלגוריתם</button>
 </section>
 </form>
 {% endblock %}

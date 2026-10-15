@@ -4,13 +4,14 @@ Paper: https://cdn.aaai.org/AAAI/2007/AAAI07-187.pdf
 Programmer: Uzia Peer. Date: 2026-10-12.
 """
 
-import io
 import importlib.util
+import io
 import logging
 import os
 import sys
+from itertools import pairwise
 from pathlib import Path
-from random import Random
+from random import Random, SystemRandom
 from threading import Lock
 from time import perf_counter
 
@@ -58,27 +59,56 @@ def point(form, prefix):
         ) from None
 
 
+def random_endpoints(grid, previous=None):
+    valid_corners = [
+        (x, y)
+        for x in range(grid.width + 1)
+        for y in range(grid.height + 1)
+        if grid.valid_corner((x, y))
+    ]
+    if len(valid_corners) < 2:
+        raise ValueError("אין במפה שתי נקודות חוקיות שונות להתחלה וליעד.")
+    rng = SystemRandom()
+    start = rng.choice(valid_corners)
+    goals = [corner for corner in valid_corners if corner != start]
+    if previous and start == previous[0] and previous[1] in goals and len(goals) > 1:
+        goals.remove(previous[1])
+    goal = rng.choice(goals)
+    if previous and (start, goal) == previous:
+        return goal, start
+    return start, goal
+
+
 @app.route("/", methods=["GET", "POST"])
 def index():
-    values = dict(
-        cells=DEFAULT,
-        sx=0,
-        sy=0,
-        gx=5,
-        gy=5,
-        width=5,
-        height=5,
-        density=20,
-        seed=7,
-    )
+    values = {
+        "cells": DEFAULT,
+        "sx": 0,
+        "sy": 0,
+        "gx": 5,
+        "gy": 5,
+        "width": 5,
+        "height": 5,
+        "density": 20,
+        "seed": 7,
+    }
     if request.method == "POST":
         values.update(request.form)
         try:
-            if request.form.get("action") == "random":
+            action = request.form.get("action")
+            if action == "map":
                 width, height = int(values["width"]), int(values["height"])
                 density, seed = int(values["density"]), int(values["seed"])
-                if not (1 <= width <= 50 and 1 <= height <= 50 and 0 <= density <= 60):
-                    raise ValueError("גודל הגריד חייב להיות 1–50 ואחוז החסימה 0–60.")
+                if not (
+                    1 <= width <= 50
+                    and 1 <= height <= 50
+                    and 0 <= density <= 60
+                    and 0 <= seed <= 1_000_000
+                ):
+                    raise ValueError(
+                        "גודל המפה חייב להיות 1–50, אחוז החסימה 0–60, "
+                        "ו־seed בטווח 0–1,000,000."
+                    )
                 rng = Random(seed)
                 cells = [
                     [int(rng.random() < density / 100) for _ in range(width)]
@@ -87,12 +117,16 @@ def index():
                 cells[0][0] = cells[-1][-1] = 0
                 values.update(
                     cells="\n".join(" ".join(map(str, r)) for r in cells),
-                    sx=0,
-                    sy=0,
-                    gx=width,
-                    gy=height,
                 )
-            else:
+            elif action == "points":
+                grid = parse_grid(values["cells"])
+                try:
+                    previous = point(values, "s"), point(values, "g")
+                except ValueError:
+                    previous = None
+                start, goal = random_endpoints(grid, previous)
+                values.update(sx=start[0], sy=start[1], gx=goal[0], gy=goal[1])
+            elif action == "run":
                 grid = parse_grid(values["cells"])
                 start, goal = point(values, "s"), point(values, "g")
                 if not grid.valid_corner(start) or not grid.valid_corner(goal):
@@ -110,14 +144,16 @@ def index():
                     algorithm_logger.addHandler(handler)
                     t0 = perf_counter()
                     try:
-                        path = theta_star([list(row) for row in grid.cells], start, goal)
+                        path = theta_star(
+                            [list(row) for row in grid.cells], start, goal
+                        )
                     finally:
                         runtime = perf_counter() - t0
                         algorithm_logger.removeHandler(handler)
                         algorithm_logger.setLevel(previous)
                 segments = [
                     (a, b, grid.line_of_sight(a, b), path_length([a, b]))
-                    for a, b in zip(path, path[1:])
+                    for a, b in pairwise(path)
                 ]
                 error = None if path else "אין מסלול בין נקודת ההתחלה ליעד בגריד הזה."
                 return render_template(
@@ -134,6 +170,8 @@ def index():
                     values=values,
                     paper=PAPER,
                 )
+            else:
+                raise ValueError("הפעולה המבוקשת אינה מוכרת.")
         except (ValueError, TypeError) as exc:
             return render_template(
                 "index.html", values=values, error=str(exc), paper=PAPER
