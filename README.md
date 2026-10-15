@@ -17,3 +17,9 @@ py -3.12 -m venv .venv
 <p dir="rtl" align="right">
 האתר נפתח בכתובת <code>http://127.0.0.1:5000</code>. להרצת הבדיקות מתקינים <code>pytest</code> ומריצים <code>./.venv/Scripts/python.exe -m pytest tests -v</code>.
 </p>
+
+<h2 dir="rtl" align="right">התאמה לשרת המחלקה</h2>
+
+<p dir="rtl" align="right">
+קובץ <code>requirements.txt</code> מקבע את <code>gunicorn==22.0.0</code>, בהתאם למדריך שרת המחלקה. נקודת הכניסה של השירות היא <code>app:app</code>; הקובץ <code>wsgi.py</code> מספק גם את נקודת הכניסה <code>wsgi:app</code> לבדיקה או להפעלה ידנית.
+</p>

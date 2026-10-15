@@ -1,4 +1,5 @@
 # Deployment-only branch: Basic Theta* code plus lightweight package metadata.
 theta-star-basic @ git+https://github.com/UziaPeer/Python.git@codex/theta-star-deployment
 Flask==3.1.3
-gunicorn==23.0.0; platform_system != "Windows"
+# The department service wrapper is documented and tested with Gunicorn 22.
+gunicorn==22.0.0; platform_system != "Windows"
