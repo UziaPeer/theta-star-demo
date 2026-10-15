@@ -1,9 +1,12 @@
-# אתר הדגמה ל־Basic Theta*
+<h1 dir="rtl" align="right">אתר הדגמה ל־Basic Theta*</h1>
 
-זהו מאגר Git נפרד. האתר מקבל גריד, יוצר גם קלט אקראי, מציג מסלול,
-בדיקת קו ראייה, לוגים וקישור למאמר. אין בו מימוש AP.
+<p dir="rtl" align="right">
+זהו אתר Flask להדגמת האלגוריתם Basic Theta*. המשתמש יכול להזין גריד בעצמו או ליצור קלט אקראי, ולראות את המסלול, בדיקת קו הראייה והלוגים. באתר יש גם קישור למאמר ודף אודות. אין בו מימוש AP.
+</p>
 
-אחרי שכפול המאגר ל־Windows, מתוך תיקיית האתר:
+<h2 dir="rtl" align="right">הרצה מקומית</h2>
+
+<p dir="rtl" align="right">אחרי שכפול המאגר, פותחים טרמינל בתיקיית האתר ומריצים:</p>
 
 ```powershell
 py -3.12 -m venv .venv
@@ -11,25 +14,26 @@ py -3.12 -m venv .venv
 ./.venv/Scripts/python.exe app.py
 ```
 
-האתר נפתח ב־http://127.0.0.1:5000. לבדיקות מתקינים גם `pytest`
-ומריצים `./.venv/Scripts/python.exe -m pytest tests -v`.
-בתיקיית הפרויקט המשותפת אפשר פשוט להריץ `./start.ps1` מתוך `project`.
+<p dir="rtl" align="right">
+האתר נפתח בכתובת <code>http://127.0.0.1:5000</code>. לבדיקות מתקינים גם <code>pytest</code> ומריצים <code>./.venv/Scripts/python.exe -m pytest tests -v</code>. מתוך תיקיית <code>project</code> של הפרויקט המשותף אפשר להריץ גם <code>./start.ps1</code>.
+</p>
 
-`requirements.txt` מתקין את Basic Theta* מענף Git ייעודי
-`codex/theta-star-deployment` ב־fork. הענף הזה זהה לענף המימוש,
-בתוספת הגדרות התקנה קטנות ב־`pyproject.toml`: המאגר המקורי אינו
-ניתן להתקנת pip ישירות בגלל מבנה התיקיות שלו. כך ענף ה־PR נשאר
-עם קובצי האלגוריתם והבדיקות בלבד. ההתקנה נבדקה מקומית.
-לפיתוח מקומי בלי התקנה אפשר להגדיר `THETA_STAR_REPO` לנתיב המקור.
+<h2 dir="rtl" align="right">התקנת האלגוריתם</h2>
 
-פריסה עתידית, לאחר אישור המרצה:
+<p dir="rtl" align="right">
+קובץ <code>requirements.txt</code> מתקין את Basic Theta* מהענף <code>codex/theta-star-deployment</code> ב־fork. הענף הזה מכיל את המימוש וגם הגדרות התקנה קטנות ב־<code>pyproject.toml</code>, כי אי אפשר להתקין את המאגר המקורי ישירות באמצעות pip. כך ה־PR של האלגוריתם נשאר עם קובצי האלגוריתם והבדיקות בלבד. ההתקנה נבדקה מקומית. לפיתוח בלי התקנה אפשר להגדיר את <code>THETA_STAR_REPO</code> לנתיב המקור.
+</p>
 
-1. ענף הפריסה ומאגר האתר כבר פורסמו; לפני פריסה בודקים שהם מעודכנים.
-2. לקבל חשבון ופורט לפי הוראות שרת המחלקה העדכניות.
-3. בשרת ליצור venv ולהריץ `pip install -r requirements.txt`.
-4. לוודא ש־`python -c "from graphs.theta_star import theta_star"` מצליח.
-5. להריץ `gunicorn --workers 1 --bind 127.0.0.1:PORT wsgi:app` ולחבר לשירות המחלקה.
-6. לבדוק באתר הציבורי קלט רגיל, אקראי, שגוי ולוגים, ואז לצלם מסכים.
+<h2 dir="rtl" align="right">פריסה לשרת המחלקה</h2>
 
-אין באתר database או מפתח סודי; קלט מוגבל ל־50×50 ו־debug כבוי.
-הוראות השרת המדויקות והפורט עדיין מחייבים אישור מול המחלקה.
+<ol dir="rtl" align="right">
+<li>מקבלים מהמחלקה חשבון ופורט בהתאם להוראות העדכניות.</li>
+<li>יוצרים בשרת סביבה וירטואלית ומריצים <code>pip install -r requirements.txt</code>.</li>
+<li>בודקים שהייבוא <code>from graphs.theta_star import theta_star</code> מצליח.</li>
+<li>מריצים <code>gunicorn --workers 1 --bind 127.0.0.1:PORT wsgi:app</code> ומחברים לשירות המחלקה.</li>
+<li>בודקים באתר הציבורי קלט רגיל, קלט אקראי, קלט שגוי ולוגים.</li>
+</ol>
+
+<p dir="rtl" align="right">
+האתר אינו משתמש במסד נתונים או במפתח סודי. גודל הקלט מוגבל ל־50×50, ומצב debug כבוי. הוראות השרת והפורט המדויקים ייקבעו לפי פרטי הגישה מהמחלקה.
+</p>
